@@ -1,0 +1,80 @@
+{
+    "name": "sourecode/doctrine-extension-bundle",
+    "license": "MIT",
+    "type": "symfony-bundle",
+    "authors": [
+        {
+            "name": "chapterjason",
+            "email": "jason@sourecode.dev"
+        }
+    ],
+    "require": {
+        "doctrine/doctrine-bundle": "^2.14",
+        "doctrine/orm": "^3.3",
+        "sourecode/timezone-bundle": "^0.1.1",
+        "symfony/config": "^7.1",
+        "symfony/dependency-injection": "^7.1",
+        "symfony/http-kernel": "^7.1",
+        "symfony/intl": "^7.1",
+        "symfony/security-bundle": "^7.1",
+        "symfony/security-core": "^7.1"
+    },
+    "require-dev": {
+        "brainmaestro/composer-git-hooks": "^3.0",
+        "ergebnis/composer-normalize": "^2.45",
+        "nyholm/symfony-bundle-test": "^3.0",
+        "php-cs-fixer/shim": "^3.74",
+        "phpbench/phpbench": "^1.4",
+        "phpunit/phpunit": "^9.5",
+        "psalm/plugin-symfony": "^5.2",
+        "symfony/browser-kit": "^7.1",
+        "symfony/clock": "^7.1",
+        "symfony/phpunit-bridge": "^7.1",
+        "symfony/runtime": "^7.1",
+        "twig/twig": "^3.2",
+        "vimeo/psalm": "^6.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "SoureCode\\Bundle\\DoctrineExtension\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\": "tests/app/src/",
+            "SoureCode\\Bundle\\DoctrineExtension\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "symfony/runtime": true
+        }
+    },
+    "extra": {
+        "hooks": {
+            "config": {
+                "stop-on-failure": [
+                    "pre-commit",
+                    "pre-push"
+                ]
+            },
+            "pre-commit": [
+                "composer normalize",
+                "vendor/bin/php-cs-fixer fix"
+            ],
+            "pre-push": [
+                "composer normalize --dry-run",
+                "vendor/bin/php-cs-fixer fix --dry-run",
+                "vendor/bin/simple-phpunit",
+                "vendor/bin/psalm"
+            ]
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "vendor/bin/cghooks add",
+        "post-update-cmd": "vendor/bin/cghooks update",
+        "benchmark": "./vendor/bin/phpbench run tests/Benchmark --report=default",
+        "profile": "./vendor/bin/phpbench xdebug:profile tests/Benchmark"
+    }
+}

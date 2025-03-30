@@ -1,0 +1,3 @@
+soure_code_timezone:
+    default_timezone: 'Europe/Berlin'
+    enabled_timezones: ['Etc/UTC', 'Europe/Berlin']
