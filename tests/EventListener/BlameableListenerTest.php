@@ -44,6 +44,9 @@ class BlameableListenerTest extends AbstractWebTestCase
         $client = self::getClient();
         $client->loginUser(new InMemoryUser('test', 'test'));
         $container = self::getContainer();
+        /**
+         * @var EntityManagerInterface $entityManager
+         */
         $entityManager = $container->get(EntityManagerInterface::class);
 
         $article = new Article();
@@ -55,10 +58,8 @@ class BlameableListenerTest extends AbstractWebTestCase
         $this->assertNotNull($article->getCreatedBy());
         $this->assertNull($article->getUpdatedBy());
 
-        $this->resetKernel();
-
-        // re-login as reset kernel clears the security token
-        $client->loginUser(new InMemoryUser('test', 'test'));
+        // reset
+        $entityManager->clear();
 
         // Act
         /**

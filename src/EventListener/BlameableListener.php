@@ -2,9 +2,12 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\EventListener;
 
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use SoureCode\Bundle\DoctrineExtension\Contracts\BlameableInterface;
+use SoureCode\Bundle\DoctrineExtension\Traits\BlameableTrait;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Service\ResetInterface;
@@ -12,10 +15,13 @@ use Symfony\Contracts\Service\ResetInterface;
 final class BlameableListener implements ResetInterface
 {
     private ?UserInterface $user = null;
-    private bool $isNull = false;
 
     public function __construct(
         private readonly Security $security,
+        /**
+         * @var class-string<UserInterface>
+         */
+        private readonly string $userClass,
     ) {
     }
 
@@ -41,17 +47,11 @@ final class BlameableListener implements ResetInterface
 
     private function getUser(): ?UserInterface
     {
-        if ($this->isNull) {
-            return null;
-        }
-
         if (null === $this->user) {
             $this->user = $this->security->getUser();
         }
 
         if (null === $this->user) {
-            $this->isNull = true;
-
             return null;
         }
 
@@ -59,14 +59,36 @@ final class BlameableListener implements ResetInterface
             return $this->user;
         }
 
-        $this->isNull = true;
-
         return null;
+    }
+
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
+    {
+        $classMetadata = $eventArgs->getClassMetadata();
+        $reflectionClass = $classMetadata->getReflectionClass();
+
+        if (
+            $reflectionClass->implementsInterface(BlameableInterface::class)
+            && \in_array(BlameableTrait::class, $reflectionClass->getTraitNames(), true)
+        ) {
+            $classMetadataBuilder = new ClassMetadataBuilder($classMetadata);
+
+            $classMetadataBuilder->createManyToOne('createdBy', $this->userClass)
+                ->addJoinColumn('created_by', 'id', nullable: false)
+                ->cascadeDetach()
+                ->cascadePersist()
+                ->build();
+
+            $classMetadataBuilder->createManyToOne('updatedBy', $this->userClass)
+                ->addJoinColumn('updated_by', 'id', nullable: true)
+                ->cascadeDetach()
+                ->cascadePersist()
+                ->build();
+        }
     }
 
     public function reset(): void
     {
         $this->user = null;
-        $this->isNull = false;
     }
 }

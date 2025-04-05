@@ -50,7 +50,8 @@ class TimestampableListenerTest extends AbstractKernelTestCase
         $this->assertNotNull($post->getCreatedAt());
         $this->assertNull($post->getUpdatedAt());
 
-        $this->resetKernel();
+        // reset
+        $entityManager->clear();
 
         // Act
         $post = $entityManager->getRepository(Post::class)->find($post->getId()); // Fetch the post again

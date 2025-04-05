@@ -2,10 +2,13 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\EventListener;
 
+use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Psr\Clock\ClockInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TimestampableInterface;
+use SoureCode\Bundle\DoctrineExtension\Traits\TimestampableTrait;
 use Symfony\Contracts\Service\ResetInterface;
 
 final class TimestampableListener implements ResetInterface
@@ -14,6 +17,8 @@ final class TimestampableListener implements ResetInterface
 
     public function __construct(
         private readonly ClockInterface $clock,
+        private readonly string $createdAtType,
+        private readonly string $updatedAtType,
     ) {
     }
 
@@ -34,6 +39,26 @@ final class TimestampableListener implements ResetInterface
 
         if ($object instanceof TimestampableInterface) {
             $object->setUpdatedAt($this->now);
+        }
+    }
+
+    public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
+    {
+        $classMetadata = $eventArgs->getClassMetadata();
+        $reflectionClass = $classMetadata->getReflectionClass();
+
+        if (
+            $reflectionClass->implementsInterface(TimestampableInterface::class)
+            && \in_array(TimestampableTrait::class, $reflectionClass->getTraitNames(), true)
+        ) {
+            $classMetadataBuilder = new ClassMetadataBuilder($classMetadata);
+
+            $classMetadataBuilder->createField('createdAt', $this->createdAtType)
+                ->build();
+
+            $classMetadataBuilder->createField('updatedAt', $this->updatedAtType)
+                ->nullable(true)
+                ->build();
         }
     }
 

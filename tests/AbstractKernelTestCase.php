@@ -60,24 +60,4 @@ abstract class AbstractKernelTestCase extends KernelTestCase
 
         parent::tearDown();
     }
-
-    protected function resetKernel(): void
-    {
-        $container = self::getContainer();
-
-        /**
-         * @var Registry $registry
-         */
-        $registry = $container->get('doctrine');
-
-        if ($registry instanceof ResetInterface) {
-            $registry->reset();
-        }
-
-        if ($container->has('services_resetter')) {
-            $container->get('services_resetter')->reset();
-        }
-
-        $container->reset();
-    }
 }

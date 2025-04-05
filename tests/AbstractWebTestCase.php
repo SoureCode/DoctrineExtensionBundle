@@ -58,15 +58,4 @@ abstract class AbstractWebTestCase extends WebTestCase
 
         parent::tearDown();
     }
-
-    protected function resetKernel(): void
-    {
-        $container = self::getContainer();
-
-        if ($container->has('services_resetter')) {
-            $container->get('services_resetter')->reset();
-        }
-
-        $container->reset();
-    }
 }
