@@ -6,6 +6,7 @@ Enhances Doctrine with:
 - **Timestampable**: Automatically manage creation/update timestamps. (`createdAt`, `updatedAt`)
 - **Blameable**: Track the user responsible for changes. (`createdBy`, `updatedBy`)
 - **UTC Date/Time**: Replaces all Doctrine datetime types with UTC-based types to ensure all date-related values are stored in UTC in the database.
+- **Translatable**: Provides a simple way to manage translations for your entities.
 
 >
 > Why another implementation???
