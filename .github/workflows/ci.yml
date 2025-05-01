@@ -86,3 +86,19 @@ jobs:
             -   uses: codecov/codecov-action@v5
                 env:
                     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    mutation-tests:
+        name: Mutation Tests
+        needs:
+            - dependency-validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    tools: infection
+            -   uses: ramsey/composer-install@v3
+            -   run: infection --min-msi=58 --min-covered-msi=69 --threads=4
+                env:
+                    STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
