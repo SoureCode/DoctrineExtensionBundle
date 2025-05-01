@@ -6,6 +6,7 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
+use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
 use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
 
 final class TranslatableListener
@@ -17,6 +18,9 @@ final class TranslatableListener
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
     {
+        /**
+         * @var ClassMetadata<TranslatableInterface> $classMetadata
+         */
         $classMetadata = $event->getClassMetadata();
 
         if (\in_array($classMetadata->getName(), $this->translationMapping->getTranslatableClassNames(), true)) {
@@ -25,7 +29,8 @@ final class TranslatableListener
     }
 
     /**
-     * @psalm-param \ReflectionClass<TranslatableInterface> $reflectionClass
+     * @param ClassMetadata<TranslatableInterface> $classMetadata
+     * @param class-string<TranslationInterface>   $translationClassName
      */
     private function mapTranslatable(ClassMetadata $classMetadata, string $translationClassName): void
     {

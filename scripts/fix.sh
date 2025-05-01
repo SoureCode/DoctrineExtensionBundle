@@ -17,31 +17,14 @@ if [ ! -f "tools/composer-normalize.phar" ]; then
     chmod +x tools/composer-normalize.phar
 fi
 
-if [ ! -f "tools/composer-require-checker.phar" ]; then
-    wget https://github.com/maglnet/ComposerRequireChecker/releases/latest/download/composer-require-checker.phar -O tools/composer-require-checker.phar
-    chmod +x tools/composer-require-checker.phar
-fi
-
 if [ ! -f "tools/php-cs-fixer.phar" ]; then
     wget https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/releases/latest/download/php-cs-fixer.phar -O tools/php-cs-fixer.phar
     chmod +x tools/php-cs-fixer.phar
 fi
-
-if [ ! -f "tools/phpstan.phar" ]; then
-    wget https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar -O tools/phpstan.phar
-    chmod +x tools/phpstan.phar
-fi
 # </editor-fold>
 
 composer update --no-interaction --no-progress --ansi
-composer validate --no-ansi --strict composer.json
-
-php tools/composer-normalize.phar --dry-run
-php tools/composer-require-checker.phar check
-PHP_CS_FIXER_IGNORE_ENV=1 php tools/php-cs-fixer.phar fix --dry-run --show-progress=dots --using-cache=no --verbose
-
-php tools/phpstan.phar analyse --memory-limit=512M --ansi --no-progress --error-format=table
-
-vendor/bin/phpunit
+php tools/composer-normalize.phar
+PHP_CS_FIXER_IGNORE_ENV=1 php tools/php-cs-fixer.phar fix --show-progress=dots --using-cache=no --verbose
 
 popd >/dev/null

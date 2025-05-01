@@ -3,7 +3,6 @@
 namespace SoureCode\Bundle\DoctrineExtension\Doctrine\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\DateTimeImmutableType;
 
 final class UTCDateTimeImmutableType extends DateTimeImmutableType
@@ -14,11 +13,11 @@ final class UTCDateTimeImmutableType extends DateTimeImmutableType
     }
 
     /**
-     * @psalm-param T $value
+     * @param T $value
+     *
+     * @return (T is null ? null : \DateTimeImmutable)
      *
      * @template T
-     *
-     * @throws ConversionException
      */
     public function convertToPHPValue($value, AbstractPlatform $platform): ?\DateTimeImmutable
     {

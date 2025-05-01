@@ -47,19 +47,7 @@ final class BlameableListener implements ResetInterface
 
     private function getUser(): ?UserInterface
     {
-        if (null === $this->user) {
-            $this->user = $this->security->getUser();
-        }
-
-        if (null === $this->user) {
-            return null;
-        }
-
-        if ($this->user instanceof UserInterface) {
-            return $this->user;
-        }
-
-        return null;
+        return $this->user ??= $this->security->getUser();
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
@@ -80,7 +68,7 @@ final class BlameableListener implements ResetInterface
                 ->build();
 
             $classMetadataBuilder->createManyToOne('updatedBy', $this->userClass)
-                ->addJoinColumn('updated_by', 'id', nullable: true)
+                ->addJoinColumn('updated_by', 'id')
                 ->cascadeDetach()
                 ->cascadePersist()
                 ->build();

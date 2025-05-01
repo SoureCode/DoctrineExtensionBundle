@@ -42,9 +42,9 @@ jobs:
             -   uses: shivammathur/setup-php@v2
                 with:
                     php-version: 8.4
-                    tools: psalm
+                    tools: phpstan
             -   uses: "ramsey/composer-install@v3"
-            -   run: psalm --no-cache --threads=4 --output-format=github
+            -   run: phpstan --memory-limit=512M --ansi --no-progress --error-format=github
     unit-tests:
         name: Unit Tests
         needs:

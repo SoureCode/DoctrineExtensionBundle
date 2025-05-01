@@ -13,7 +13,7 @@ class TimestampableTraitTest extends AbstractKernelTestCase
         self::bootKernel();
 
         $this->setUpDatabase([
-            Department::class
+            Department::class,
         ]);
     }
 

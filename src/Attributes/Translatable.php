@@ -9,7 +9,7 @@ final class Translatable
 {
     public function __construct(
         /**
-         * @var class-string<TranslationInterface>
+         * @var class-string
          */
         public string $translationClass,
     ) {

@@ -5,6 +5,7 @@ namespace SoureCode\Bundle\DoctrineExtension\Tests\EventListener;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractWebTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 class BlameableListenerTest extends AbstractWebTestCase
@@ -14,13 +15,16 @@ class BlameableListenerTest extends AbstractWebTestCase
         self::createClient();
 
         $this->setUpDatabase([
-            Article::class
+            Article::class,
         ]);
     }
 
     public function testPersist(): void
     {
         // Arrange
+        /**
+         * @var KernelBrowser $client
+         */
         $client = self::getClient();
         $client->loginUser(new InMemoryUser('test', 'test'));
         $container = self::getContainer();
@@ -41,6 +45,9 @@ class BlameableListenerTest extends AbstractWebTestCase
     public function testUpdate(): void
     {
         // Arrange
+        /**
+         * @var KernelBrowser $client
+         */
         $client = self::getClient();
         $client->loginUser(new InMemoryUser('test', 'test'));
         $container = self::getContainer();

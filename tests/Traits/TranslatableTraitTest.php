@@ -4,6 +4,7 @@ namespace SoureCode\Bundle\DoctrineExtension\Tests\Traits;
 
 use App\Entity\Product;
 use App\Entity\ProductTranslation;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractKernelTestCase;
 
@@ -46,8 +47,11 @@ class TranslatableTraitTest extends AbstractKernelTestCase
         $product = $entityManager->find(Product::class, $product->getId());
 
         $this->assertCount(1, $product->getTranslations());
-        $this->assertEquals('en', $product->getTranslations()->first()->getLocale());
-        $this->assertEquals('Test Product', $product->getTranslations()->first()->getName());
+
+        $first = $product->getTranslations()->first();
+
+        $this->assertEquals('en', $first->getLocale());
+        $this->assertEquals('Test Product', $first->getName());
     }
 
     public function testGetTranslations(): void
@@ -81,6 +85,9 @@ class TranslatableTraitTest extends AbstractKernelTestCase
         $product = $entityManager->find(Product::class, $product->getId());
 
         // Act
+        /**
+         * @var Collection<string, ProductTranslation> $actual
+         */
         $actual = $product->getTranslations();
 
         // Assert
@@ -158,6 +165,9 @@ class TranslatableTraitTest extends AbstractKernelTestCase
         $entityManager->flush();
 
         // Act
+        /**
+         * @var ProductTranslation|null $actual
+         */
         $actual = $product->getTranslation('en');
 
         // Assert
@@ -168,6 +178,9 @@ class TranslatableTraitTest extends AbstractKernelTestCase
         $product = $entityManager->find(Product::class, $product->getId());
 
         // Act
+        /**
+         * @var ProductTranslation|null $actual
+         */
         $actual = $product->getTranslation('en');
 
         // Assert

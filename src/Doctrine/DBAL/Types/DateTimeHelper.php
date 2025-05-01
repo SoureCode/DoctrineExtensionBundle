@@ -10,7 +10,14 @@ final class DateTimeHelper
 {
     private static ?\DateTimeZone $utc = null;
 
-    public static function convertToDatabaseValue(\DateTime|\DateTimeImmutable|null $value): \DateTime|\DateTimeImmutable|null
+    /**
+     * @param T $value
+     *
+     * @return (T is null ? null : (T is \DateTimeImmutable ? \DateTimeImmutable : (T is \DateTime ? \DateTime : T)))
+     *
+     * @template T
+     */
+    public static function convertToDatabaseValue(mixed $value): mixed
     {
         if ($value instanceof \DateTimeImmutable) {
             $value = \DateTimeImmutable::createFromInterface($value)
@@ -30,8 +37,7 @@ final class DateTimeHelper
 
     /**
      * @param class-string $type
-     *
-     * @psalm-param T $value
+     * @param T            $value
      *
      * @template T
      *
@@ -43,13 +49,17 @@ final class DateTimeHelper
             return $value;
         }
 
-        $converted = \DateTime::createFromFormat($format, $value, self::getUtc());
+        if (\is_string($value)) {
+            $converted = \DateTime::createFromFormat($format, $value, self::getUtc());
 
-        if (!$converted) {
-            throw InvalidFormat::new($value, $type, $format);
+            if (!$converted) {
+                throw InvalidFormat::new($value, $type, $format);
+            }
+
+            return $converted->setTimezone(self::getTimeZone());
         }
 
-        return $converted->setTimezone(self::getTimeZone());
+        return null;
     }
 
     public static function getTimeZone(): \DateTimeZone
@@ -58,13 +68,12 @@ final class DateTimeHelper
     }
 
     /**
+     * @param T            $value
      * @param class-string $type
      *
-     * @psalm-param T $value
+     * @return (T is null ? null : \DateTimeImmutable)
      *
      * @template T
-     *
-     * @throws ConversionException
      */
     public static function convertToImmutablePHPValue($value, string $type, string $format): ?\DateTimeImmutable
     {
@@ -72,12 +81,16 @@ final class DateTimeHelper
             return $value;
         }
 
-        $converted = \DateTimeImmutable::createFromFormat($format, $value, self::getUtc());
+        if (\is_string($value)) {
+            $converted = \DateTimeImmutable::createFromFormat($format, $value, self::getUtc());
 
-        if (!$converted) {
-            throw InvalidFormat::new($value, $type, $format);
+            if (!$converted) {
+                throw InvalidFormat::new($value, $type, $format);
+            }
+
+            return $converted->setTimezone(self::getTimeZone());
         }
 
-        return $converted->setTimezone(self::getTimeZone());
+        return null;
     }
 }

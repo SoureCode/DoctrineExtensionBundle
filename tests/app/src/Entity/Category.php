@@ -17,19 +17,19 @@ class Category implements BlameableInterface
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?string $title = null;
+    private string $title;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setTitle(?string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }

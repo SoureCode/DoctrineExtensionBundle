@@ -75,6 +75,9 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
         // @formatter:on
     }
 
+    /**
+     * @param array{user_class: class-string<UserInterface>, created_at_type: string, updated_at_type: string} $config
+     */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $parameters = $container->parameters();

@@ -16,10 +16,10 @@ class Article implements BlameableInterface
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?string $title = null;
+    private string $title;
 
-    #[ORM\Column()]
-    private ?string $createdBy = null;
+    #[ORM\Column]
+    private string $createdBy;
 
     #[ORM\Column(nullable: true)]
     private ?string $updatedBy = null;
@@ -29,19 +29,19 @@ class Article implements BlameableInterface
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    public function setTitle(?string $title): void
+    public function setTitle(string $title): void
     {
         $this->title = $title;
     }
 
     public function getCreatedBy(): ?UserInterface
     {
-        return $this->createdBy ? new InMemoryUser($this->createdBy, '') : null;
+        return $this->createdBy ? new InMemoryUser($this->createdBy, '') : throw new \LogicException('Created by user not set.');
     }
 
     public function setCreatedBy(UserInterface $createdBy): self

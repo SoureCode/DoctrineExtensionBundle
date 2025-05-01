@@ -6,6 +6,7 @@ use App\Entity\Category;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractWebTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
 class BlameableTraitTest extends AbstractWebTestCase
 {
@@ -15,13 +16,16 @@ class BlameableTraitTest extends AbstractWebTestCase
 
         $this->setUpDatabase([
             Category::class,
-            User::class
+            User::class,
         ]);
     }
 
     public function testPersist(): void
     {
         // Arrange
+        /**
+         * @var KernelBrowser $client
+         */
         $client = self::getClient();
         $container = self::getContainer();
         $entityManager = $container->get(EntityManagerInterface::class);
@@ -47,6 +51,9 @@ class BlameableTraitTest extends AbstractWebTestCase
     public function testUpdate(): void
     {
         // Arrange
+        /**
+         * @var KernelBrowser $client
+         */
         $client = self::getClient();
         $container = self::getContainer();
         /**

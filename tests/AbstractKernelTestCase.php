@@ -23,15 +23,15 @@ abstract class AbstractKernelTestCase extends KernelTestCase
     {
         /** @var TestKernel $kernel */
         $kernel = parent::createKernel($options);
-        $kernel->setTestProjectDir(__DIR__ . '/app');
+        $kernel->setTestProjectDir(__DIR__.'/app');
         $kernel->addTestBundle(SecurityBundle::class);
         $kernel->addTestBundle(DoctrineBundle::class);
         $kernel->addTestBundle(SoureCodeTimezoneBundle::class);
         $kernel->addTestBundle(SoureCodeDoctrineExtensionBundle::class);
-        $kernel->addTestConfig(__DIR__ . '/app/config/services.yaml');
-        $kernel->addTestConfig(__DIR__ . '/app/config/security.yaml');
-        $kernel->addTestConfig(__DIR__ . '/app/config/doctrine.yaml');
-        $kernel->addTestConfig(__DIR__ . '/app/config/soure_code_timezone.yaml');
+        $kernel->addTestConfig(__DIR__.'/app/config/services.yaml');
+        $kernel->addTestConfig(__DIR__.'/app/config/security.yaml');
+        $kernel->addTestConfig(__DIR__.'/app/config/doctrine.yaml');
+        $kernel->addTestConfig(__DIR__.'/app/config/soure_code_timezone.yaml');
         $kernel->handleOptions($options);
 
         return $kernel;

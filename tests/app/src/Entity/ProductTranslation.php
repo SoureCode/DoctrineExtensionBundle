@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
 use SoureCode\Bundle\DoctrineExtension\Traits\TranslationTrait;
-use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
 class ProductTranslation implements TranslationInterface
@@ -17,21 +17,22 @@ class ProductTranslation implements TranslationInterface
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?string $name = null;
+    private string $name;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): ProductTranslation
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 }

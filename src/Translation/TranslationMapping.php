@@ -14,12 +14,12 @@ final class TranslationMapping
     private ?array $mapping = null;
 
     /**
-     * @var array<class-string<TranslatableInterface>>
+     * @var list<class-string<TranslatableInterface>>
      */
     private ?array $translatableClassNames = null;
 
     /**
-     * @var array<class-string<TranslationInterface>>
+     * @var list<class-string<TranslationInterface>>
      */
     private ?array $translationClassNames = null;
     /**
@@ -42,7 +42,7 @@ final class TranslationMapping
     }
 
     /**
-     * @psalm-return array<class-string<TranslationInterface>>
+     * @return list<class-string<TranslationInterface>>
      */
     public function getTranslationClassNames(): array
     {
@@ -59,17 +59,17 @@ final class TranslationMapping
         }
 
         /**
-         * @psalm-var array<class-string<TranslatableInterface>, class-string<TranslationInterface>>|null $cacheItem
+         * @var array<class-string<TranslatableInterface>, class-string<TranslationInterface>>|null $cacheItem
          */
         $cacheItem = $this->cache->getItem(MappingGenerator::CACHE_KEY_MAPPING)->get();
 
         if (null === $cacheItem) {
-            $this->mapping = $this->mappingGenerator->generate();
-        } else {
-            $this->mapping = $cacheItem;
+            $this->mapping = $mapping = $this->mappingGenerator->generate();
+
+            return $mapping;
         }
 
-        return $this->mapping;
+        return $this->mapping = $cacheItem;
     }
 
     /**
@@ -81,7 +81,7 @@ final class TranslationMapping
     }
 
     /**
-     * @psalm-return array<class-string<TranslatableInterface>>
+     * @return list<class-string<TranslatableInterface>>
      */
     public function getTranslatableClassNames(): array
     {

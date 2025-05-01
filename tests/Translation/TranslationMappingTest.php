@@ -9,13 +9,12 @@ use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
 
 class TranslationMappingTest extends AbstractKernelTestCase
 {
-
     protected function setUp(): void
     {
         self::bootKernel();
 
         $this->setUpDatabase([
-            Product::class
+            Product::class,
         ]);
     }
 

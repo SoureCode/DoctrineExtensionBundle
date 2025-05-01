@@ -14,7 +14,7 @@ final class UTCDateImmutableType extends DateImmutableType
     }
 
     /**
-     * @psalm-param T $value
+     * @param T $value
      *
      * @template T
      *

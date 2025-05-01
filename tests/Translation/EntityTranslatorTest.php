@@ -57,6 +57,9 @@ class EntityTranslatorTest extends AbstractKernelTestCase
         $entityTranslator = $container->get(EntityTranslatorInterface::class);
 
         // Act
+        /**
+         * @var ProductTranslation|null $translation
+         */
         $translation = $entityTranslator->getTranslation($product, 'en');
 
         // Assert
@@ -88,7 +91,7 @@ class EntityTranslatorTest extends AbstractKernelTestCase
         self::assertCount(2, $identityMap[ProductTranslation::class], 'Identity map should contain two ProductTranslation entities');
     }
 
-    public function testGetTranslationValue()
+    public function testGetTranslationValue(): void
     {
         // Arrange
         $container = self::getContainer();
@@ -125,8 +128,8 @@ class EntityTranslatorTest extends AbstractKernelTestCase
         $entityTranslator = $container->get(EntityTranslatorInterface::class);
 
         // Act
-        $actualEn = $entityTranslator->getTranslationValue($product,  'name', 'en');
-        $actualDe = $entityTranslator->getTranslationValue($product,  'name', 'de');
+        $actualEn = $entityTranslator->getTranslationValue($product, 'name', 'en');
+        $actualDe = $entityTranslator->getTranslationValue($product, 'name', 'de');
 
         // Assert
         self::assertEquals('Cheese', $actualEn);

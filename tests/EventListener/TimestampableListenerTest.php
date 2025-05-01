@@ -13,7 +13,7 @@ class TimestampableListenerTest extends AbstractKernelTestCase
         self::bootKernel();
 
         $this->setUpDatabase([
-            Post::class
+            Post::class,
         ]);
     }
 

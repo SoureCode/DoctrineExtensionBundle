@@ -5,16 +5,16 @@ namespace SoureCode\Bundle\DoctrineExtension\Traits;
 use Doctrine\Common\Collections\Collection;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
 
+/**
+ * @template T of TranslationInterface = TranslationInterface
+ */
 trait TranslatableTrait
 {
     /**
-     * @var Collection<string, TranslationInterface>
+     * @var Collection<string, T>
      */
     private Collection $translations;
 
-    /**
-     * @return Collection<string, TranslationInterface>
-     */
     public function getTranslations(): Collection
     {
         return $this->translations;

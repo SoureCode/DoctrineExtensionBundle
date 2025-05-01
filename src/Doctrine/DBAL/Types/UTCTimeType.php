@@ -14,7 +14,7 @@ final class UTCTimeType extends TimeType
     }
 
     /**
-     * @psalm-param T $value
+     * @param T $value
      *
      * @template T
      *

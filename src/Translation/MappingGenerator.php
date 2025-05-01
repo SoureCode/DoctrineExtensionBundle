@@ -50,12 +50,19 @@ final class MappingGenerator
                  * @var Translatable $attributeInstance
                  */
                 $attributeInstance = $attribute->newInstance();
+
+                /**
+                 * @var class-string<TranslationInterface> $translationClassName
+                 */
                 $translationClassName = $attributeInstance->translationClass;
 
                 if (!\in_array($translationClassName, $classNames, true)) {
                     throw new \RuntimeException(\sprintf('Class "%s" is not a entity class.', $translationClassName));
                 }
 
+                /**
+                 * @var class-string<TranslatableInterface> $translatableClassName
+                 */
                 $translatableClassName = $translatableReflectionClass->getName();
 
                 if ($translationClassName === $translatableClassName) {

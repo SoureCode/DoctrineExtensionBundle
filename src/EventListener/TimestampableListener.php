@@ -57,7 +57,7 @@ final class TimestampableListener implements ResetInterface
                 ->build();
 
             $classMetadataBuilder->createField('updatedAt', $this->updatedAtType)
-                ->nullable(true)
+                ->nullable()
                 ->build();
         }
     }

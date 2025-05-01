@@ -13,7 +13,6 @@ class User implements UserInterface
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-
     public function getId(): ?int
     {
         return $this->id;
