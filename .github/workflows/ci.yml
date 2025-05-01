@@ -65,7 +65,11 @@ jobs:
                 with:
                     php-version: ${{ matrix.php-version }}
             -   uses: ramsey/composer-install@v3
-            -   run: vendor/bin/phpunit
+            -   run: vendor/bin/phpunit --log-junit junit.xml
+            -   if: ${{ !cancelled() }}
+                uses: codecov/test-results-action@v1
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
     coverage:
         name: Coverage
         needs:
