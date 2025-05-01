@@ -3,14 +3,21 @@
 namespace SoureCode\Bundle\DoctrineExtension;
 
 use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\EventListener\BlameableListener;
 use SoureCode\Bundle\DoctrineExtension\EventListener\TimestampableListener;
+use SoureCode\Bundle\DoctrineExtension\EventListener\TranslatableListener;
+use SoureCode\Bundle\DoctrineExtension\EventListener\TranslationListener;
+use SoureCode\Bundle\DoctrineExtension\Translation\EntityTranslator;
+use SoureCode\Bundle\DoctrineExtension\Translation\EntityTranslatorInterface;
+use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -111,6 +118,45 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
             ->tag('doctrine.event_listener', [
                 'event' => 'loadClassMetadata',
             ]);
+
+        $services
+            ->set(self::$PREFIX.'mapping.translation', TranslationMapping::class)
+            ->args([
+                service(EntityManagerInterface::class),
+                service(CacheInterface::class),
+            ]);
+
+        $services
+            ->set(self::$PREFIX.'listener.translatable', TranslatableListener::class)
+            ->args([
+                service(self::$PREFIX.'mapping.translation'),
+            ])
+            ->tag('doctrine.event_listener', [
+                'event' => 'loadClassMetadata',
+            ]);
+
+        $services
+            ->set(self::$PREFIX.'listener.translation', TranslationListener::class)
+            ->args([
+                service(EntityManagerInterface::class),
+                service(self::$PREFIX.'mapping.translation'),
+            ])
+            ->tag('doctrine.event_listener', [
+                'event' => 'loadClassMetadata',
+            ]);
+
+        $services
+            ->set(self::$PREFIX.'translator.entity', EntityTranslator::class)
+            ->args([
+                service('request_stack'),
+                service(EntityManagerInterface::class),
+                service(self::$PREFIX.'mapping.translation'),
+                param('kernel.default_locale'),
+            ]);
+
+        $services
+            ->alias(EntityTranslatorInterface::class, self::$PREFIX.'translator.entity')
+            ->public();
     }
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void

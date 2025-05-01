@@ -2,12 +2,10 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\Tests\Traits;
 
-use App\Entity\Article;
 use App\Entity\Category;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractWebTestCase;
-use Symfony\Component\Security\Core\User\InMemoryUser;
 
 class BlameableTraitTest extends AbstractWebTestCase
 {

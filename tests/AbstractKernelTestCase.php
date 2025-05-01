@@ -3,7 +3,6 @@
 namespace SoureCode\Bundle\DoctrineExtension\Tests;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Nyholm\BundleTest\TestKernel;
@@ -12,7 +11,6 @@ use SoureCode\Bundle\Timezone\SoureCodeTimezoneBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Contracts\Service\ResetInterface;
 
 abstract class AbstractKernelTestCase extends KernelTestCase
 {
