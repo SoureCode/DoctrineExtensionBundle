@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=8.4",
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/orm": "^3.3",
         "sourecode/timezone-bundle": "^0.1.1",
