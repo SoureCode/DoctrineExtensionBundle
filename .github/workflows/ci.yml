@@ -1,0 +1,88 @@
+name: CI
+on:
+    pull_request: null
+    push: null
+permissions:
+    contents: read
+
+jobs:
+    dependency-validation:
+        name: Dependency Validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+            -   name: Install PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    tools: composer-normalize
+            -   name: Ensure that composer.json is valid
+                run: composer validate --no-ansi --strict composer.json
+            -   name: Ensure that composer.json is normalized
+                run: composer normalize --dry-run
+            -   name: Ensure that dependencies can be installed
+                run: composer install --no-ansi --dry-run
+    coding-guidelines:
+        name: Coding Guidelines
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+            -   name: Install PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.3 # php-cs-fixer is not yet compatible with 8.4
+                    tools: php-cs-fixer
+            -   name: Run PHP-CS-Fixer
+                run: php-cs-fixer fix --dry-run --show-progress=dots --using-cache=no --verbose
+    static-analysis:
+        name: Static Analysis
+        needs:
+            - dependency-validation
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Install PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.4
+                  tools: psalm
+            - name: Install dependencies with Composer
+              run: composer update --no-interaction --no-ansi --no-progress
+            - name: Run PHPStan
+              run: psalm --no-cache --threads=4 --output-format=github
+    unit-tests:
+        name: Unit Tests
+        needs:
+            - dependency-validation
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 5
+        strategy:
+            fail-fast: false
+            matrix:
+                os:
+                    - ubuntu-latest
+                php-version:
+                    - "8.4"
+                    - "8.5"
+        steps:
+            -   uses: actions/checkout@v4
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-version }}
+            -   name: Cache Composer
+                uses: actions/cache@v3
+                with:
+                    path: vendor
+                    key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+            -   name: Install Dependencies
+                run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+            -   name: Execute composer normalize
+                run: composer normalize --dry-run
+            -   name: Execute tests
+                run: vendor/bin/phpunit
