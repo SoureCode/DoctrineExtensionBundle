@@ -6,9 +6,9 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Psr\Clock\ClockInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TimestampableInterface;
 use SoureCode\Bundle\DoctrineExtension\Traits\TimestampableTrait;
+use Symfony\Component\Clock\ClockInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 final class TimestampableListener implements ResetInterface

@@ -3,7 +3,6 @@
 namespace SoureCode\Bundle\DoctrineExtension;
 
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\EventListener\BlameableListener;
 use SoureCode\Bundle\DoctrineExtension\EventListener\TimestampableListener;
 use SoureCode\Bundle\DoctrineExtension\EventListener\TranslatableListener;
@@ -127,7 +126,7 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
         $services
             ->set(self::$PREFIX.'mapping.generator', MappingGenerator::class)
             ->args([
-                service(EntityManagerInterface::class),
+                service('doctrine.orm.default_entity_manager'),
                 service(self::$PREFIX.'cache'),
             ]);
 
@@ -150,7 +149,7 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
         $services
             ->set(self::$PREFIX.'listener.translation', TranslationListener::class)
             ->args([
-                service(EntityManagerInterface::class),
+                service('doctrine.orm.default_entity_manager'),
                 service(self::$PREFIX.'mapping.translation'),
             ])
             ->tag('doctrine.event_listener', [
@@ -161,7 +160,7 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
             ->set(self::$PREFIX.'translator.entity', EntityTranslator::class)
             ->args([
                 service('request_stack'),
-                service(EntityManagerInterface::class),
+                service('doctrine.orm.default_entity_manager'),
                 service(self::$PREFIX.'mapping.translation'),
                 param('kernel.default_locale'),
             ]);

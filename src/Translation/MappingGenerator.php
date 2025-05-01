@@ -3,10 +3,10 @@
 namespace SoureCode\Bundle\DoctrineExtension\Translation;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Cache\CacheItemPoolInterface;
 use SoureCode\Bundle\DoctrineExtension\Attributes\Translatable;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 final class MappingGenerator
 {
@@ -14,7 +14,7 @@ final class MappingGenerator
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly CacheItemPoolInterface $cache,
+        private readonly AdapterInterface $cache,
     ) {
     }
 

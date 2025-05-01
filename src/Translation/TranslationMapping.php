@@ -2,13 +2,10 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\Translation;
 
-use Psr\Cache\CacheItemPoolInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-/**
- * @todo add cache warmer
- */
 final class TranslationMapping
 {
     /**
@@ -31,7 +28,7 @@ final class TranslationMapping
     private ?array $reverseMapping = null;
 
     public function __construct(
-        private readonly CacheItemPoolInterface $cache,
+        private readonly AdapterInterface $cache,
         private readonly MappingGenerator $mappingGenerator,
     ) {
     }
