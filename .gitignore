@@ -7,6 +7,7 @@ composer.lock
 .phpunit.result.cache
 .php-cs-fixer.cache
 .phpbench/
+coverage/
 
 # script-templates
 ## Ignore all subdirectories under scripts (script-template folders)

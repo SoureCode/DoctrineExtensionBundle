@@ -31,6 +31,11 @@ if [ ! -f "tools/phpstan.phar" ]; then
     wget https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar -O tools/phpstan.phar
     chmod +x tools/phpstan.phar
 fi
+
+if [ ! -f "tools/infection.phar" ]; then
+    wget https://github.com/infection/infection/releases/latest/download/infection.phar -O tools/infection.phar
+    chmod +x tools/infection.phar
+fi
 # </editor-fold>
 
 composer update --no-interaction --no-progress --ansi
@@ -39,9 +44,8 @@ composer validate --no-ansi --strict composer.json
 php tools/composer-normalize.phar --dry-run
 php tools/composer-require-checker.phar check
 PHP_CS_FIXER_IGNORE_ENV=1 php tools/php-cs-fixer.phar fix --dry-run --show-progress=dots --using-cache=no --verbose
-
 php tools/phpstan.phar analyse --memory-limit=512M --ansi --no-progress --error-format=table
-
 vendor/bin/phpunit
+php tools/infection.phar --min-msi=58 --min-covered-msi=69 --threads=4
 
 popd >/dev/null
