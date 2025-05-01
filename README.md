@@ -7,19 +7,8 @@
 [![codecov](https://codecov.io/gh/SoureCode/DoctrineExtensionBundle/branch/master/graph/badge.svg?token=GBFBVXQYK4)](https://codecov.io/gh/SoureCode/DoctrineExtensionBundle)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FSoureCode%2FDoctrineExtensionBundle%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/SoureCode/DoctrineExtensionBundle/master)
 
-Enhances Doctrine with:
-
-- **Timestampable**: Automatically manage creation/update timestamps. (`createdAt`, `updatedAt`)
-- **Blameable**: Track the user responsible for changes. (`createdBy`, `updatedBy`)
-- **UTC Date/Time**: Replaces all Doctrine datetime types with UTC-based types to ensure all date-related values are stored in UTC in the database.
-- **Translatable**: Provides a simple way to manage translations for your entities.
-
->
-> Why another implementation???
->
-
-It provides clean, focused support for UTC date handling and entity auditing without bloated overhead or complex computation.
-I focused on performance and simplicity, ensuring that the bundle is easy to use and understand.
+[Documentation](./docs/index.md)
+[License](./LICENSE)
 
 ## Installation
 
