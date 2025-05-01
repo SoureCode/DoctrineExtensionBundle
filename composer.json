@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=8.4",
+        "doctrine/collections": "^2.3.0",
         "doctrine/dbal": "^4.2.3",
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/orm": "^3.3",
@@ -34,7 +35,6 @@
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-symfony": "^5.2",
         "symfony/browser-kit": "^7.1",
-        "symfony/clock": "^7.1",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/runtime": "^7.1",
         "twig/twig": "^3.2",
