@@ -20,7 +20,6 @@
         "symfony/security-core": "^7.1"
     },
     "require-dev": {
-        "brainmaestro/composer-git-hooks": "^3.0",
         "ergebnis/composer-normalize": "^2.45",
         "nyholm/symfony-bundle-test": "^3.0",
         "php-cs-fixer/shim": "^3.74",
@@ -51,29 +50,7 @@
             "symfony/runtime": true
         }
     },
-    "extra": {
-        "hooks": {
-            "config": {
-                "stop-on-failure": [
-                    "pre-commit",
-                    "pre-push"
-                ]
-            },
-            "pre-commit": [
-                "composer normalize",
-                "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix"
-            ],
-            "pre-push": [
-                "composer normalize --dry-run",
-                "PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --dry-run",
-                "vendor/bin/simple-phpunit",
-                "vendor/bin/psalm --no-cache"
-            ]
-        }
-    },
     "scripts": {
-        "post-install-cmd": "vendor/bin/cghooks add",
-        "post-update-cmd": "vendor/bin/cghooks update",
         "benchmark": "./vendor/bin/phpbench run tests/Benchmark --report=default",
         "profile": "./vendor/bin/phpbench xdebug:profile tests/Benchmark"
     }
