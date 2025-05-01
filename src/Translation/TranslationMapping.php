@@ -2,11 +2,9 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\Translation;
 
-use Doctrine\ORM\EntityManagerInterface;
-use SoureCode\Bundle\DoctrineExtension\Attributes\Translatable;
+use Psr\Cache\CacheItemPoolInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * @todo add cache warmer
@@ -33,8 +31,8 @@ final class TranslationMapping
     private ?array $reverseMapping = null;
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly CacheInterface $cache,
+        private readonly CacheItemPoolInterface $cache,
+        private readonly MappingGenerator $mappingGenerator,
     ) {
     }
 
@@ -54,82 +52,27 @@ final class TranslationMapping
         return $this->translationClassNames ??= array_values($this->getMapping());
     }
 
+    /**
+     * @return array<class-string<TranslatableInterface>, class-string<TranslationInterface>>
+     */
     public function getMapping(): array
     {
-        return $this->mapping ??= $this->generate();
-    }
+        if (null !== $this->mapping) {
+            return $this->mapping;
+        }
 
-    /**
-     * @return array<class-string<TranslatableInterface>, class-string<TranslationInterface>>
-     */
-    private function generate(): array
-    {
-        return $this->cache->get('soure_code_doctrine_extension.translatable_mapping', function () {
-            return $this->doGenerate();
-        });
-    }
-
-    /**
-     * @return array<class-string<TranslatableInterface>, class-string<TranslationInterface>>
-     */
-    private function doGenerate(): array
-    {
         /**
-         * @var array<class-string<TranslatableInterface>, class-string<TranslationInterface>> $mapping
+         * @psalm-var array<class-string<TranslatableInterface>, class-string<TranslationInterface>>|null $cacheItem
          */
-        $mapping = [];
-        $translatableClassNames = [];
-        $translationClassNames = [];
-        $configuration = $this->entityManager->getConfiguration();
-        $classMetadataFactory = $configuration->getMetadataDriverImpl();
+        $cacheItem = $this->cache->getItem(MappingGenerator::CACHE_KEY_MAPPING)->get();
 
-        if (!$classMetadataFactory) {
-            throw new \RuntimeException('No metadata driver found.');
+        if (null === $cacheItem) {
+            $this->mapping = $this->mappingGenerator->generate();
+        } else {
+            $this->mapping = $cacheItem;
         }
 
-        $classNames = $classMetadataFactory->getAllClassNames();
-
-        foreach ($classNames as $className) {
-            $translatableReflectionClass = new \ReflectionClass($className);
-
-            if (!$translatableReflectionClass->implementsInterface(TranslatableInterface::class)) {
-                continue;
-            }
-
-            if ($attribute = $translatableReflectionClass->getAttributes(Translatable::class)[0] ?? null) {
-                /**
-                 * @var Translatable $attributeInstance
-                 */
-                $attributeInstance = $attribute->newInstance();
-                $translationClassName = $attributeInstance->translationClass;
-
-                if (!\in_array($translationClassName, $classNames, true)) {
-                    throw new \RuntimeException(\sprintf('Class "%s" is not a entity class.', $translationClassName));
-                }
-
-                $translatableClassName = $translatableReflectionClass->getName();
-
-                if ($translationClassName === $translatableClassName) {
-                    throw new \RuntimeException(\sprintf('Class "%s" cannot be used as translation class for itself.', $translationClassName));
-                }
-
-                if (\in_array($translatableClassName, $translatableClassNames, true)) {
-                    throw new \RuntimeException(\sprintf('Class "%s" is already used as a translatable class.', $translatableClassName));
-                }
-
-                if (\in_array($translationClassName, $translationClassNames, true)) {
-                    throw new \RuntimeException(\sprintf('Class "%s" is already used as a translation class.', $translationClassName));
-                }
-
-                $translatableClassNames[] = $translatableClassName;
-                $translationClassNames[] = $translationClassName;
-                $mapping[$translatableClassName] = $translationClassName;
-            } else {
-                throw new \RuntimeException(\sprintf('Missing attribute "%s" in class "%s".', Translatable::class, $translatableReflectionClass->getName()));
-            }
-        }
-
-        return $mapping;
+        return $this->mapping;
     }
 
     /**

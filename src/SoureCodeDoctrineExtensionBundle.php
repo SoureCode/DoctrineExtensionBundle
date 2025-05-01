@@ -10,6 +10,7 @@ use SoureCode\Bundle\DoctrineExtension\EventListener\TranslatableListener;
 use SoureCode\Bundle\DoctrineExtension\EventListener\TranslationListener;
 use SoureCode\Bundle\DoctrineExtension\Translation\EntityTranslator;
 use SoureCode\Bundle\DoctrineExtension\Translation\EntityTranslatorInterface;
+use SoureCode\Bundle\DoctrineExtension\Translation\MappingGenerator;
 use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -17,7 +18,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Contracts\Cache\CacheInterface;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
@@ -87,6 +87,11 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
         $services = $container->services();
 
         $services
+            ->set(self::$PREFIX.'cache')
+            ->parent('cache.system')
+            ->tag('cache.pool');
+
+        $services
             ->set(self::$PREFIX.'listener.timestampable', TimestampableListener::class)
             ->args([
                 service('clock'),
@@ -120,10 +125,17 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
             ]);
 
         $services
-            ->set(self::$PREFIX.'mapping.translation', TranslationMapping::class)
+            ->set(self::$PREFIX.'mapping.generator', MappingGenerator::class)
             ->args([
                 service(EntityManagerInterface::class),
-                service(CacheInterface::class),
+                service(self::$PREFIX.'cache'),
+            ]);
+
+        $services
+            ->set(self::$PREFIX.'mapping.translation', TranslationMapping::class)
+            ->args([
+                service(self::$PREFIX.'cache'),
+                service(self::$PREFIX.'mapping.generator'),
             ]);
 
         $services
