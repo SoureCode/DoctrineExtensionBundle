@@ -28,9 +28,7 @@
         "symfony/service-contracts": "^3.5"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.45",
         "nyholm/symfony-bundle-test": "^3.0",
-        "php-cs-fixer/shim": "^3.74",
         "phpbench/phpbench": "^1.4",
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-symfony": "^5.2",

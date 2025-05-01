@@ -1,5 +1,6 @@
-# dependencies
+# dependencies and tools
 vendor/
+tools/
 
 # caches, logs etc.
 composer.lock
