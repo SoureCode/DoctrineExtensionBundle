@@ -1,6 +1,12 @@
 
 # sourecode/doctrine-extension-bundle
 
+[![Packagist Version](https://img.shields.io/packagist/v/sourecode/doctrine-extension-bundle.svg)](https://packagist.org/packages/sourecode/doctrine-extension-bundle)
+[![Downloads](https://img.shields.io/packagist/dt/sourecode/doctrine-extension-bundle.svg)](https://packagist.org/packages/sourecode/doctrine-extension-bundle)
+[![CI](https://github.com/SoureCode/DoctrineExtensionBundle/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SoureCode/DoctrineExtensionBundle/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/SoureCode/DoctrineExtensionBundle/branch/master/graph/badge.svg?token=GBFBVXQYK4)](https://codecov.io/gh/SoureCode/DoctrineExtensionBundle)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FSoureCode%2FDoctrineExtensionBundle%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/SoureCode/DoctrineExtensionBundle/master)
+
 Enhances Doctrine with:
 
 - **Timestampable**: Automatically manage creation/update timestamps. (`createdAt`, `updatedAt`)
