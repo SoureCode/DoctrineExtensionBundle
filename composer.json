@@ -1,5 +1,6 @@
 {
     "name": "sourecode/doctrine-extension-bundle",
+    "description": "Provides a set of Doctrine extensions for Symfony applications.",
     "license": "MIT",
     "type": "symfony-bundle",
     "authors": [
