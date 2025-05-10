@@ -4,12 +4,12 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
-use SoureCode\Bundle\DoctrineExtension\Traits\TranslationTrait;
+use SoureCode\Bundle\DoctrineExtension\Traits\TranslatableAwareTrait;
 
 #[ORM\Entity]
 class ProductTranslation implements TranslationInterface
 {
-    use TranslationTrait;
+    use TranslatableAwareTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

@@ -2,15 +2,16 @@
 
 namespace SoureCode\Bundle\DoctrineExtension;
 
-use Doctrine\DBAL\Types\Types;
-use SoureCode\Bundle\DoctrineExtension\EventListener\BlameableListener;
-use SoureCode\Bundle\DoctrineExtension\EventListener\TimestampableListener;
+use SoureCode\Bundle\DoctrineExtension\Cache\ClassMetadataCacheWarmer;
+use SoureCode\Bundle\DoctrineExtension\EventListener\PropertyListener;
 use SoureCode\Bundle\DoctrineExtension\EventListener\TranslatableListener;
 use SoureCode\Bundle\DoctrineExtension\EventListener\TranslationListener;
+use SoureCode\Bundle\DoctrineExtension\Mapping\ClassMetadataFactory;
+use SoureCode\Bundle\DoctrineExtension\Mapping\ClassMetadataGenerator;
+use SoureCode\Bundle\DoctrineExtension\Provider\DateTimeValueProvider;
+use SoureCode\Bundle\DoctrineExtension\Provider\UserValueProvider;
 use SoureCode\Bundle\DoctrineExtension\Translation\EntityTranslator;
 use SoureCode\Bundle\DoctrineExtension\Translation\EntityTranslatorInterface;
-use SoureCode\Bundle\DoctrineExtension\Translation\MappingGenerator;
-use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,7 +21,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
 
+/**
+ * @phpstan-type ConfigType array{
+ *     user_class: class-string<UserInterface>,
+ *     persist_date_time_class: string,
+ *     update_date_time_class: string,
+ * }
+ */
 final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
 {
     private static string $PREFIX = 'soure_code.doctrine_extension.';
@@ -49,42 +58,31 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
                     ->thenInvalid('The class "%s" must implement the "'.UserInterface::class.'" interface.');
 
         $children
-            ->scalarNode('created_at_type')
-                ->defaultValue(Types::DATETIME_IMMUTABLE)
+            ->scalarNode('persist_date_time_class')
+                ->defaultValue(\DateTimeImmutable::class)
                 ->validate()
-                    ->ifNotInArray([
-                        Types::DATETIMETZ_IMMUTABLE,
-                        Types::DATETIME_IMMUTABLE,
-                        Types::DATETIMETZ_MUTABLE,
-                        Types::DATETIME_MUTABLE,
-                    ])
-                    ->thenInvalid('The type "%s" is not supported. Supported types are: "'.Types::DATETIMETZ_IMMUTABLE.'", "'.Types::DATETIME_IMMUTABLE.'", "'.Types::DATETIMETZ_MUTABLE.'", "'.Types::DATETIME_MUTABLE.'".');
+                    ->ifTrue(fn (string $v) => !class_exists($v) || !is_subclass_of($v, \DateTimeInterface::class))
+                    ->thenInvalid('The class "%s" must be a subclass of "'.\DateTimeInterface::class.'".');
 
         $children
-            ->scalarNode('updated_at_type')
-                ->defaultValue(Types::DATETIME_IMMUTABLE)
+            ->scalarNode('update_date_time_class')
+            ->defaultValue(\DateTimeImmutable::class)
                 ->validate()
-                    ->ifNotInArray([
-                        Types::DATETIMETZ_IMMUTABLE,
-                        Types::DATETIME_IMMUTABLE,
-                        Types::DATETIMETZ_MUTABLE,
-                        Types::DATETIME_MUTABLE,
-                    ])
-                    ->thenInvalid('The type "%s" is not supported. Supported types are: "'.Types::DATETIMETZ_IMMUTABLE.'", "'.Types::DATETIME_IMMUTABLE.'", "'.Types::DATETIMETZ_MUTABLE.'", "'.Types::DATETIME_MUTABLE.'".')
-        ;
+                    ->ifTrue(fn (string $v) => !class_exists($v) || !is_subclass_of($v, \DateTimeInterface::class))
+                    ->thenInvalid('The class "%s" must be a subclass of "'.\DateTimeInterface::class.'".');
         // @formatter:on
     }
 
     /**
-     * @param array{user_class: class-string<UserInterface>, created_at_type: string, updated_at_type: string} $config
+     * @param ConfigType $config
      */
     public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
     {
         $parameters = $container->parameters();
 
         $parameters->set(self::$PREFIX.'user_class', $config['user_class']);
-        $parameters->set(self::$PREFIX.'created_at_type', $config['created_at_type']);
-        $parameters->set(self::$PREFIX.'updated_at_type', $config['updated_at_type']);
+        $parameters->set(self::$PREFIX.'persist_date_time_class', $config['persist_date_time_class']);
+        $parameters->set(self::$PREFIX.'update_date_time_class', $config['update_date_time_class']);
 
         $services = $container->services();
 
@@ -94,56 +92,83 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
             ->tag('cache.pool');
 
         $services
-            ->set(self::$PREFIX.'listener.timestampable', TimestampableListener::class)
-            ->args([
-                service('clock'),
-                param(self::$PREFIX.'created_at_type'),
-                param(self::$PREFIX.'updated_at_type'),
-            ])
-            ->tag('doctrine.event_listener', [
-                'event' => 'prePersist',
-            ])
-            ->tag('doctrine.event_listener', [
-                'event' => 'preUpdate',
-            ])
-            ->tag('doctrine.event_listener', [
-                'event' => 'loadClassMetadata',
-            ]);
-
-        $services
-            ->set(self::$PREFIX.'listener.blameable', BlameableListener::class)
-            ->args([
-                service('security.helper'),
-                param(self::$PREFIX.'user_class'),
-            ])
-            ->tag('doctrine.event_listener', [
-                'event' => 'prePersist',
-            ])
-            ->tag('doctrine.event_listener', [
-                'event' => 'preUpdate',
-            ])
-            ->tag('doctrine.event_listener', [
-                'event' => 'loadClassMetadata',
-            ]);
-
-        $services
-            ->set(self::$PREFIX.'mapping.generator', MappingGenerator::class)
+            ->set(self::$PREFIX.'class_metadata.generator', ClassMetadataGenerator::class)
             ->args([
                 service('doctrine.orm.default_entity_manager'),
                 service(self::$PREFIX.'cache'),
+                param(self::$PREFIX.'persist_date_time_class'),
+                param(self::$PREFIX.'update_date_time_class'),
+                param(self::$PREFIX.'user_class'),
             ]);
 
         $services
-            ->set(self::$PREFIX.'mapping.translation', TranslationMapping::class)
+            ->set(self::$PREFIX.'class_metadata.cache_warmer', ClassMetadataCacheWarmer::class)
             ->args([
-                service(self::$PREFIX.'cache'),
-                service(self::$PREFIX.'mapping.generator'),
-            ]);
+                service(self::$PREFIX.'class_metadata.generator'),
+            ])
+            ->tag('kernel.cache_warmer')
+        ;
+
+        $services
+            ->set(self::$PREFIX.'class_metadata.factory', ClassMetadataFactory::class)
+            ->args([
+                service(self::$PREFIX.'class_metadata.generator'),
+            ])
+            ->tag('kernel.reset', [
+                'method' => 'reset',
+            ])
+        ;
+
+        $services
+            ->set(self::$PREFIX.'value_provider.datetime', DateTimeValueProvider::class)
+            ->args([
+                service('clock'),
+            ])
+            ->tag(self::$PREFIX.'value_provider', [
+                'priority' => 100,
+            ])
+            ->tag('kernel.reset', [
+                'method' => 'reset',
+            ])
+        ;
+
+        $services
+            ->set(self::$PREFIX.'value_provider.user', UserValueProvider::class)
+            ->args([
+                service('security.token_storage'),
+            ])
+            ->tag(self::$PREFIX.'value_provider', [
+                'priority' => 100,
+            ])
+            ->tag('kernel.reset', [
+                'method' => 'reset',
+            ])
+        ;
+
+        $services
+            ->set(self::$PREFIX.'listener.property', PropertyListener::class)
+            ->args([
+                tagged_iterator(self::$PREFIX.'value_provider'),
+                service(self::$PREFIX.'class_metadata.factory'),
+            ])
+            ->tag('doctrine.event_listener', [
+                'event' => 'prePersist',
+            ])
+            ->tag('doctrine.event_listener', [
+                'event' => 'preUpdate',
+            ])
+            ->tag('doctrine.event_listener', [
+                'event' => 'loadClassMetadata',
+            ])
+            ->tag('kernel.reset', [
+                'method' => 'reset',
+            ])
+        ;
 
         $services
             ->set(self::$PREFIX.'listener.translatable', TranslatableListener::class)
             ->args([
-                service(self::$PREFIX.'mapping.translation'),
+                service(self::$PREFIX.'class_metadata.factory'),
             ])
             ->tag('doctrine.event_listener', [
                 'event' => 'loadClassMetadata',
@@ -152,8 +177,7 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
         $services
             ->set(self::$PREFIX.'listener.translation', TranslationListener::class)
             ->args([
-                service('doctrine.orm.default_entity_manager'),
-                service(self::$PREFIX.'mapping.translation'),
+                service(self::$PREFIX.'class_metadata.factory'),
             ])
             ->tag('doctrine.event_listener', [
                 'event' => 'loadClassMetadata',
@@ -164,7 +188,7 @@ final class SoureCodeDoctrineExtensionBundle extends AbstractBundle
             ->args([
                 service('request_stack'),
                 service('doctrine.orm.default_entity_manager'),
-                service(self::$PREFIX.'mapping.translation'),
+                service(self::$PREFIX.'class_metadata.factory'),
                 param('kernel.default_locale'),
             ]);
 

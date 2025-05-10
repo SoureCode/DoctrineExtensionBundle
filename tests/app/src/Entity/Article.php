@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use SoureCode\Bundle\DoctrineExtension\Contracts\BlameableInterface;
-use Symfony\Component\Security\Core\User\InMemoryUser;
+use SoureCode\Bundle\DoctrineExtension\Attributes\SetOnPersist;
+use SoureCode\Bundle\DoctrineExtension\Attributes\SetOnUpdate;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
-class Article implements BlameableInterface
+class Article
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,11 +18,15 @@ class Article implements BlameableInterface
     #[ORM\Column]
     private string $title;
 
-    #[ORM\Column]
-    private string $createdBy;
+    #[SetOnPersist]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'created_by', referencedColumnName: 'id')]
+    private UserInterface $createdBy;
 
-    #[ORM\Column(nullable: true)]
-    private ?string $updatedBy = null;
+    #[SetOnUpdate]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'updated_by', referencedColumnName: 'id')]
+    private ?UserInterface $updatedBy = null;
 
     public function getId(): ?int
     {
@@ -39,26 +43,26 @@ class Article implements BlameableInterface
         $this->title = $title;
     }
 
-    public function getCreatedBy(): ?UserInterface
+    public function getCreatedBy(): UserInterface
     {
-        return $this->createdBy ? new InMemoryUser($this->createdBy, '') : throw new \LogicException('Created by user not set.');
+        return $this->createdBy;
     }
 
     public function setCreatedBy(UserInterface $createdBy): self
     {
-        $this->createdBy = $createdBy->getUserIdentifier();
+        $this->createdBy = $createdBy;
 
         return $this;
     }
 
     public function getUpdatedBy(): ?UserInterface
     {
-        return $this->updatedBy ? new InMemoryUser($this->updatedBy, '') : null;
+        return $this->updatedBy;
     }
 
     public function setUpdatedBy(UserInterface $updatedBy): self
     {
-        $this->updatedBy = $updatedBy->getUserIdentifier();
+        $this->updatedBy = $updatedBy;
 
         return $this;
     }

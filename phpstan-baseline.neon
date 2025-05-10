@@ -55,6 +55,12 @@ parameters:
 			path: tests/AbstractWebTestCase.php
 
 		-
+			message: '#^Call to function assert\(\) with true will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: tests/Benchmark/TimestampableListenerBench.php
+
+		-
 			message: '#^Cannot call method clear\(\) on Doctrine\\ORM\\EntityManagerInterface\|null\.$#'
 			identifier: method.nonObject
 			count: 3
@@ -91,109 +97,343 @@ parameters:
 			path: tests/Benchmark/TimestampableListenerBench.php
 
 		-
+			message: '#^Strict comparison using \!\=\= between null and DateTimeInterface will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 2
+			path: tests/Benchmark/TimestampableListenerBench.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertIsArray\(\) with array\<string\> will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 1
+			path: tests/Cache/ClassMetadataCacheWarmerTest.php
+
+		-
 			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/EventListener/BlameableListenerTest.php
+			path: tests/EventListener/AutoDetectPropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/EventListener/BlameableListenerTest.php
+			path: tests/EventListener/AutoDetectPropertyListenerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with DateTimeImmutable will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 3
+			path: tests/EventListener/AutoDetectPropertyListenerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/EventListener/CustomPropertyListenerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/EventListener/CustomPropertyListenerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with string will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/EventListener/CustomPropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:clear\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
 			identifier: method.notFound
 			count: 3
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:getRepository\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
 			identifier: method.notFound
 			count: 3
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with DateTimeInterface will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Cannot call method find\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Cannot call method getCreatedAt\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Cannot call method getUpdatedAt\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Cannot call method setTitle\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
-			path: tests/EventListener/TimestampableListenerTest.php
+			path: tests/EventListener/DateTimePropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
 			identifier: method.notFound
 			count: 2
-			path: tests/Traits/BlameableTraitTest.php
+			path: tests/EventListener/UserPropertyListenerTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
 			identifier: method.notFound
 			count: 2
-			path: tests/Traits/BlameableTraitTest.php
+			path: tests/EventListener/UserPropertyListenerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:reset\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/EventListener/UserPropertyListenerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:setToken\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/EventListener/UserPropertyListenerTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with Symfony\\Component\\Security\\Core\\User\\UserInterface will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: tests/EventListener/UserPropertyListenerTest.php
+
+		-
+			message: '#^Parameter \#1 \$user of method Symfony\\Bundle\\FrameworkBundle\\KernelBrowser\:\:loginUser\(\) expects Symfony\\Component\\Security\\Core\\User\\UserInterface, App\\Entity\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/EventListener/UserPropertyListenerTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getClassMetadata\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Mapping/InvalidTranslatableTest.php
+
+		-
+			message: '#^Method Mapping\\InvalidTranslatableTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/InvalidTranslatableTest.php
+
+		-
+			message: '#^Method Mapping\\InvalidTranslatableTest\:\:setUpDatabase\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/InvalidTranslatableTest.php
+
+		-
+			message: '#^Parameter \#1 \$classes of method Doctrine\\ORM\\Tools\\SchemaTool\:\:createSchema\(\) expects list\<Doctrine\\ORM\\Mapping\\ClassMetadata\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Mapping/InvalidTranslatableTest.php
+
+		-
+			message: '#^Parameter \#1 \$em of class Doctrine\\ORM\\Tools\\SchemaTool constructor expects Doctrine\\ORM\\EntityManagerInterface, object given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Mapping/InvalidTranslatableTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getClassMetadata\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Mapping/InvalidTranslationTest.php
+
+		-
+			message: '#^Method Mapping\\InvalidTranslationTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/InvalidTranslationTest.php
+
+		-
+			message: '#^Method Mapping\\InvalidTranslationTest\:\:setUpDatabase\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/InvalidTranslationTest.php
+
+		-
+			message: '#^Parameter \#1 \$classes of method Doctrine\\ORM\\Tools\\SchemaTool\:\:createSchema\(\) expects list\<Doctrine\\ORM\\Mapping\\ClassMetadata\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Mapping/InvalidTranslationTest.php
+
+		-
+			message: '#^Parameter \#1 \$em of class Doctrine\\ORM\\Tools\\SchemaTool constructor expects Doctrine\\ORM\\EntityManagerInterface, object given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Mapping/InvalidTranslationTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getClassMetadata\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Mapping/MissingPropertyTypeTest.php
+
+		-
+			message: '#^Method Mapping\\MissingPropertyTypeTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/MissingPropertyTypeTest.php
+
+		-
+			message: '#^Method Mapping\\MissingPropertyTypeTest\:\:setUpDatabase\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/MissingPropertyTypeTest.php
+
+		-
+			message: '#^Parameter \#1 \$classes of method Doctrine\\ORM\\Tools\\SchemaTool\:\:createSchema\(\) expects list\<Doctrine\\ORM\\Mapping\\ClassMetadata\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Mapping/MissingPropertyTypeTest.php
+
+		-
+			message: '#^Parameter \#1 \$em of class Doctrine\\ORM\\Tools\\SchemaTool constructor expects Doctrine\\ORM\\EntityManagerInterface, object given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Mapping/MissingPropertyTypeTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getClassMetadata\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Mapping/MissingProviderNameTest.php
+
+		-
+			message: '#^Method Mapping\\MissingProviderNameTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/MissingProviderNameTest.php
+
+		-
+			message: '#^Method Mapping\\MissingProviderNameTest\:\:setUpDatabase\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/MissingProviderNameTest.php
+
+		-
+			message: '#^Parameter \#1 \$classes of method Doctrine\\ORM\\Tools\\SchemaTool\:\:createSchema\(\) expects list\<Doctrine\\ORM\\Mapping\\ClassMetadata\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Mapping/MissingProviderNameTest.php
+
+		-
+			message: '#^Parameter \#1 \$em of class Doctrine\\ORM\\Tools\\SchemaTool constructor expects Doctrine\\ORM\\EntityManagerInterface, object given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Mapping/MissingProviderNameTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:getClassMetadata\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Mapping/UnsupportedPropertyTypeTest.php
+
+		-
+			message: '#^Method Mapping\\UnsupportedPropertyTypeTest\:\:createKernel\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/UnsupportedPropertyTypeTest.php
+
+		-
+			message: '#^Method Mapping\\UnsupportedPropertyTypeTest\:\:setUpDatabase\(\) has parameter \$classNames with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: tests/Mapping/UnsupportedPropertyTypeTest.php
+
+		-
+			message: '#^Parameter \#1 \$classes of method Doctrine\\ORM\\Tools\\SchemaTool\:\:createSchema\(\) expects list\<Doctrine\\ORM\\Mapping\\ClassMetadata\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Mapping/UnsupportedPropertyTypeTest.php
+
+		-
+			message: '#^Parameter \#1 \$em of class Doctrine\\ORM\\Tools\\SchemaTool constructor expects Doctrine\\ORM\\EntityManagerInterface, object given\.$#'
+			identifier: argument.type
+			count: 2
+			path: tests/Mapping/UnsupportedPropertyTypeTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:clear\(\)\.$#'
 			identifier: method.notFound
-			count: 1
+			count: 2
 			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
 			identifier: method.notFound
-			count: 3
+			count: 4
 			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:getRepository\(\)\.$#'
 			identifier: method.notFound
-			count: 1
+			count: 2
 			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
 			identifier: method.notFound
-			count: 3
+			count: 4
+			path: tests/Traits/TimestampableTraitTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:reset\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/Traits/TimestampableTraitTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with DateTimeInterface will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
 			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Cannot call method find\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Cannot call method getCreatedAt\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: tests/Traits/TimestampableTraitTest.php
+
+		-
+			message: '#^Cannot call method getId\(\) on mixed\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: tests/Traits/TimestampableTraitTest.php
@@ -201,20 +441,14 @@ parameters:
 		-
 			message: '#^Cannot call method getUpdatedAt\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Cannot call method setTitle\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
-			path: tests/Traits/TimestampableTraitTest.php
-
-		-
-			message: '#^Cannot call method getLocale\(\) on App\\Entity\\ProductTranslation\|false\.$#'
-			identifier: method.nonObject
 			count: 2
-			path: tests/Traits/TranslatableTraitTest.php
+			path: tests/Traits/TimestampableTraitTest.php
 
 		-
 			message: '#^Cannot call method getLocale\(\) on App\\Entity\\ProductTranslation\|null\.$#'
@@ -223,15 +457,21 @@ parameters:
 			path: tests/Traits/TranslatableTraitTest.php
 
 		-
-			message: '#^Cannot call method getName\(\) on App\\Entity\\ProductTranslation\|false\.$#'
+			message: '#^Cannot call method getLocale\(\) on mixed\.$#'
 			identifier: method.nonObject
-			count: 1
+			count: 2
 			path: tests/Traits/TranslatableTraitTest.php
 
 		-
 			message: '#^Cannot call method getName\(\) on App\\Entity\\ProductTranslation\|null\.$#'
 			identifier: method.nonObject
 			count: 4
+			path: tests/Traits/TranslatableTraitTest.php
+
+		-
+			message: '#^Cannot call method getName\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
 			path: tests/Traits/TranslatableTraitTest.php
 
 		-
@@ -247,13 +487,85 @@ parameters:
 			path: tests/Traits/TranslatableTraitTest.php
 
 		-
+			message: '#^Call to an undefined method object\:\:flush\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Traits/UserRelatedTraitsTest.php
+
+		-
+			message: '#^Call to an undefined method object\:\:persist\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/Traits/UserRelatedTraitsTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with Symfony\\Component\\Security\\Core\\User\\UserInterface will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 3
+			path: tests/Traits/UserRelatedTraitsTest.php
+
+		-
 			message: '#^Cannot call method getTranslations\(\) on App\\Entity\\Product\|null\.$#'
 			identifier: method.nonObject
 			count: 1
 			path: tests/Translation/EntityTranslatorTest.php
 
 		-
+			message: '#^Property App\\Entity\\Article\:\:\$createdBy type mapping mismatch\: database can contain App\\Entity\\User\|null but property expects Symfony\\Component\\Security\\Core\\User\\UserInterface\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: tests/app/src/Entity/Article.php
+
+		-
+			message: '#^Property App\\Entity\\Article\:\:\$createdBy type mapping mismatch\: property can contain Symfony\\Component\\Security\\Core\\User\\UserInterface but database expects App\\Entity\\User\|null\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: tests/app/src/Entity/Article.php
+
+		-
+			message: '#^Property App\\Entity\\Article\:\:\$updatedBy type mapping mismatch\: property can contain Symfony\\Component\\Security\\Core\\User\\UserInterface\|null but database expects App\\Entity\\User\|null\.$#'
+			identifier: doctrine.associationType
+			count: 1
+			path: tests/app/src/Entity/Article.php
+
+		-
+			message: '#^Method App\\Entity\\Product\:\:getTranslations\(\) return type with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: tests/app/src/Entity/Product.php
+
+		-
 			message: '#^Method App\\Entity\\User\:\:getUserIdentifier\(\) should return non\-empty\-string but returns ''''\|numeric\-string\.$#'
 			identifier: return.type
 			count: 1
 			path: tests/app/src/Entity/User.php
+
+		-
+			message: '#^Method App\\Entity\\InvalidTranslatable\:\:getTranslations\(\) return type with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: tests/app_invalid/src/Entity/InvalidTranslatable.php
+
+		-
+			message: '#^Method App\\Entity\\MissingPropertyType\:\:getCreatedAt\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: tests/app_invalid/src/Entity/MissingPropertyType.php
+
+		-
+			message: '#^Method App\\Entity\\MissingPropertyType\:\:setCreatedAt\(\) has parameter \$createdAt with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: tests/app_invalid/src/Entity/MissingPropertyType.php
+
+		-
+			message: '#^Property App\\Entity\\MissingPropertyType\:\:\$createdAt has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: tests/app_invalid/src/Entity/MissingPropertyType.php
+
+		-
+			message: '#^Method App\\Entity\\ValidTranslatable\:\:getTranslations\(\) return type with generic interface Doctrine\\Common\\Collections\\Collection does not specify its types\: TKey, T$#'
+			identifier: missingType.generics
+			count: 1
+			path: tests/app_invalid/src/Entity/ValidTranslatable.php

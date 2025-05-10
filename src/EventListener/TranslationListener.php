@@ -2,56 +2,66 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\EventListener;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrineClassMetadata;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
-use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
+use SoureCode\Bundle\DoctrineExtension\Mapping\ClassMetadata;
+use SoureCode\Bundle\DoctrineExtension\Mapping\ClassMetadataFactory;
 
 final class TranslationListener
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly TranslationMapping $translationMapping,
+        private readonly ClassMetadataFactory $classMetadataFactory,
     ) {
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
     {
         /**
-         * @var ClassMetadata<TranslationInterface> $classMetadata
+         * @var DoctrineClassMetadata<TranslationInterface> $doctrineClassMetadata
          */
-        $classMetadata = $event->getClassMetadata();
+        $doctrineClassMetadata = $event->getClassMetadata();
+        $classMetadata = $this->classMetadataFactory->create($doctrineClassMetadata->getName());
 
-        if (\in_array($classMetadata->getName(), $this->translationMapping->getTranslationClassNames(), true)) {
-            $this->mapTranslation($classMetadata, $this->translationMapping->getReverseMapping()[$classMetadata->getName()]);
+        if (
+            null !== $classMetadata->translatableClassName
+            && $doctrineClassMetadata->getReflectionClass()->implementsInterface(TranslationInterface::class)
+        ) {
+            $this->mapTranslation($event->getEntityManager(), $doctrineClassMetadata, $classMetadata);
+
+            $classMetadataBuilder = new ClassMetadataBuilder($doctrineClassMetadata);
+            $classMetadataBuilder->createField('locale', Types::STRING)
+                ->nullable(false)
+                ->length(5)
+                ->build();
         }
     }
 
     /**
-     * @param ClassMetadata<TranslationInterface> $classMetadata
-     * @param class-string<TranslatableInterface> $translatableClassName
+     * @phpstan-param DoctrineClassMetadata<TranslationInterface> $translationDoctrineClassMetadata
      */
-    private function mapTranslation(ClassMetadata $classMetadata, string $translatableClassName): void
+    private function mapTranslation(EntityManagerInterface $entityManager, DoctrineClassMetadata $translationDoctrineClassMetadata, ClassMetadata $classMetadata): void
     {
-        $translatableClassMetadata = $this->entityManager->getClassMetadata($translatableClassName);
-        $classMetadataBuilder = new ClassMetadataBuilder($classMetadata);
+        $translatableClassName = $classMetadata->translatableClassName;
 
-        $classMetadataBuilder->createField('locale', 'string')
-            ->nullable(false)
-            ->length(5)
-            ->build();
+        if (null === $translatableClassName) {
+            return;
+        }
+
+        $translatableDoctrineClassMetadata = $entityManager->getClassMetadata($translatableClassName);
+        $classMetadataBuilder = new ClassMetadataBuilder($translationDoctrineClassMetadata);
 
         $associationBuilder = $classMetadataBuilder
             ->createManyToOne('translatable', $translatableClassName)
             ->inversedBy('translations')
         ;
 
-        foreach ($translatableClassMetadata->getIdentifierColumnNames() as $columnName) {
+        foreach ($translatableDoctrineClassMetadata->getIdentifierColumnNames() as $columnName) {
             $associationBuilder->addJoinColumn(
-                'translatable_'.$columnName,
+                \sprintf('translatable_%s', $columnName),
                 $columnName,
                 true,
                 false,
@@ -61,6 +71,10 @@ final class TranslationListener
 
         $associationBuilder->build();
 
-        $classMetadata->table['uniqueConstraints'][] = ['fields' => ['locale', 'translatable']];
+        /*
+         * @note: I do not use $classMetadataBuilder->addUniqueConstraint() as it requires a name property, which I do NOT want to generate myself.
+         * @see ClassMetadataBuilder::addUniqueConstraint()
+         */
+        $translationDoctrineClassMetadata->table['uniqueConstraints'][] = ['fields' => ['locale', 'translatable']];
     }
 }

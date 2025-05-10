@@ -5,16 +5,22 @@ namespace SoureCode\Bundle\DoctrineExtension\Attributes;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-final class Translatable
+final readonly class Translatable
 {
-    public function __construct(
-        /**
-         * @var class-string
-         */
-        public string $translationClass,
-    ) {
+    /**
+     * @var class-string<TranslationInterface>
+     */
+    public string $translationClass;
+
+    /**
+     * @param class-string $translationClass
+     */
+    public function __construct(string $translationClass)
+    {
         if (!is_subclass_of($translationClass, TranslationInterface::class)) {
             throw new \InvalidArgumentException(\sprintf('The class "%s" must implement "%s".', $translationClass, TranslationInterface::class));
         }
+
+        $this->translationClass = $translationClass;
     }
 }

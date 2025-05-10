@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use SoureCode\Bundle\DoctrineExtension\Contracts\BlameableInterface;
-use SoureCode\Bundle\DoctrineExtension\Traits\BlameableTrait;
+use SoureCode\Bundle\DoctrineExtension\Traits\UserAwareTrait;
 
 #[ORM\Entity]
-class Category implements BlameableInterface
+class Category
 {
-    use BlameableTrait;
+    use UserAwareTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

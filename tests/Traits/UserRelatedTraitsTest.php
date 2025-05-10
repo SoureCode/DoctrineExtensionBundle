@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractWebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 
-class BlameableTraitTest extends AbstractWebTestCase
+class UserRelatedTraitsTest extends AbstractWebTestCase
 {
     protected function setUp(): void
     {

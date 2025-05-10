@@ -38,7 +38,10 @@ if [ ! -f "tools/infection.phar" ]; then
 fi
 # </editor-fold>
 
-composer update --no-interaction --no-progress --ansi
+if [ ! -d "vendor" ]; then
+    composer update --no-interaction --no-progress --ansi
+fi
+
 composer validate --no-ansi --strict composer.json
 
 php tools/composer-normalize.phar --dry-run
@@ -46,6 +49,6 @@ php tools/composer-require-checker.phar check
 PHP_CS_FIXER_IGNORE_ENV=1 php tools/php-cs-fixer.phar fix --dry-run --show-progress=dots --using-cache=no --verbose
 php tools/phpstan.phar analyse --memory-limit=512M --ansi --no-progress --error-format=table
 vendor/bin/phpunit
-php tools/infection.phar --min-msi=58 --min-covered-msi=69 --threads=4
+php tools/infection.phar --min-msi=64 --min-covered-msi=70 --threads=4
 
 popd >/dev/null

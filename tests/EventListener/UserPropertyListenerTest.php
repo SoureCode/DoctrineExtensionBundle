@@ -3,12 +3,12 @@
 namespace SoureCode\Bundle\DoctrineExtension\Tests\EventListener;
 
 use App\Entity\Article;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractWebTestCase;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Component\Security\Core\User\InMemoryUser;
 
-class BlameableListenerTest extends AbstractWebTestCase
+class UserPropertyListenerTest extends AbstractWebTestCase
 {
     protected function setUp(): void
     {
@@ -16,6 +16,7 @@ class BlameableListenerTest extends AbstractWebTestCase
 
         $this->setUpDatabase([
             Article::class,
+            User::class,
         ]);
     }
 
@@ -26,9 +27,14 @@ class BlameableListenerTest extends AbstractWebTestCase
          * @var KernelBrowser $client
          */
         $client = self::getClient();
-        $client->loginUser(new InMemoryUser('test', 'test'));
         $container = self::getContainer();
         $entityManager = $container->get(EntityManagerInterface::class);
+
+        $user = new User();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $client->loginUser($user);
 
         $article = new Article();
         $article->setTitle('Test Title');
@@ -49,12 +55,17 @@ class BlameableListenerTest extends AbstractWebTestCase
          * @var KernelBrowser $client
          */
         $client = self::getClient();
-        $client->loginUser(new InMemoryUser('test', 'test'));
         $container = self::getContainer();
         /**
          * @var EntityManagerInterface $entityManager
          */
         $entityManager = $container->get(EntityManagerInterface::class);
+
+        $user = new User();
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $client->loginUser($user);
 
         $article = new Article();
         $article->setTitle('Test Title');
@@ -65,8 +76,12 @@ class BlameableListenerTest extends AbstractWebTestCase
         $this->assertNotNull($article->getCreatedBy());
         $this->assertNull($article->getUpdatedBy());
 
-        // reset
-        $entityManager->clear();
+        // reset and re-login
+        $entityManager->clear(); // clear the entity manager to avoid caching issues
+        $container->get('security.token_storage')->setToken(null); // clear the token storage
+        $container->get('soure_code.doctrine_extension.value_provider.user')->reset(); // caches the user value for faster access
+        $user = $entityManager->getRepository(User::class)->find($user->getId()); // Fetch the user again
+        $client->loginUser($user); // Re-login the user
 
         // Act
         /**
@@ -79,7 +94,7 @@ class BlameableListenerTest extends AbstractWebTestCase
         $entityManager->flush();
 
         // Assert
-        $this->assertNotNull($article->getCreatedBy());
+        $this->assertSame($article->getCreatedBy(), $user, 'CreatedBy should be the same user');
         $this->assertNotNull($article->getUpdatedBy());
     }
 }

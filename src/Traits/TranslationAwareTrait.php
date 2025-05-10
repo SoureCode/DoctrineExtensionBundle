@@ -6,9 +6,9 @@ use Doctrine\Common\Collections\Collection;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
 
 /**
- * @template T of TranslationInterface = TranslationInterface
+ * @template T of TranslationInterface
  */
-trait TranslatableTrait
+trait TranslationAwareTrait
 {
     /**
      * @var Collection<string, T>
@@ -20,6 +20,9 @@ trait TranslatableTrait
         return $this->translations;
     }
 
+    /**
+     * @phpstan-param T $translation
+     */
     public function addTranslation(TranslationInterface $translation): static
     {
         if (!$this->translations->contains($translation)) {
@@ -31,6 +34,9 @@ trait TranslatableTrait
         return $this;
     }
 
+    /**
+     * @phpstan-param T $translation
+     */
     public function removeTranslation(TranslationInterface $translation): static
     {
         $this->translations->removeElement($translation);
@@ -38,6 +44,9 @@ trait TranslatableTrait
         return $this;
     }
 
+    /**
+     * @phpstan-return T|null
+     */
     public function getTranslation(string $locale): ?TranslationInterface
     {
         return $this->translations->get($locale);

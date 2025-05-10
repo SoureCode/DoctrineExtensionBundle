@@ -2,6 +2,10 @@
   "source": {
     "directories": [
       "src"
+    ],
+    "excludes": [
+      "SoureCodeDoctrineExtensionBundle.php",
+      "/Interface\\.php/"
     ]
   },
   "timeout": 10,

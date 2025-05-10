@@ -62,7 +62,7 @@ final class DateTimeHelper
         return null;
     }
 
-    public static function getTimeZone(): \DateTimeZone
+    private static function getTimeZone(): \DateTimeZone
     {
         return TimezoneManager::getInstance()->getTimezone();
     }

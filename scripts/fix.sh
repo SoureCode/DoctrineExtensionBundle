@@ -23,7 +23,10 @@ if [ ! -f "tools/php-cs-fixer.phar" ]; then
 fi
 # </editor-fold>
 
-composer update --no-interaction --no-progress --ansi
+if [ ! -d "vendor" ]; then
+    composer update --no-interaction --no-progress --ansi
+fi
+
 php tools/composer-normalize.phar
 PHP_CS_FIXER_IGNORE_ENV=1 php tools/php-cs-fixer.phar fix --show-progress=dots --using-cache=no --verbose
 

@@ -61,7 +61,27 @@ class TimestampableTraitTest extends AbstractKernelTestCase
         $entityManager->flush();
 
         // Assert
+        $updatedAt = $department->getUpdatedAt();
+
         $this->assertNotNull($department->getCreatedAt());
-        $this->assertNotNull($department->getUpdatedAt());
+        $this->assertNotNull($updatedAt);
+
+        // reset
+        $entityManager->clear();
+        $container->get('soure_code.doctrine_extension.value_provider.datetime')->reset(); // reset value_provider for date time
+
+        // Act
+        $department = $entityManager->getRepository(Department::class)->find($department->getId()); // Fetch the post again
+        $department->setTitle('Updated Title 2');
+
+        $entityManager->persist($department);
+        $entityManager->flush();
+
+        // Assert
+        $updatedAt2 = $department->getUpdatedAt();
+
+        $this->assertNotNull($department->getCreatedAt());
+        $this->assertNotNull($updatedAt2);
+        $this->assertNotEquals($updatedAt, $updatedAt2);
     }
 }

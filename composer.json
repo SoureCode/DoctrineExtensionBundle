@@ -25,7 +25,8 @@
         "symfony/intl": "^7.1",
         "symfony/security-bundle": "^7.1",
         "symfony/security-core": "^7.1",
-        "symfony/service-contracts": "^3.5"
+        "symfony/service-contracts": "^3.5",
+        "symfony/translation": "^7.1"
     },
     "require-dev": {
         "nyholm/symfony-bundle-test": "^3.0",
@@ -46,7 +47,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "App\\": "tests/app/src/",
+            "App\\": [
+                "tests/app/src/",
+                "tests/app_invalid/src/"
+            ],
             "SoureCode\\Bundle\\DoctrineExtension\\Tests\\": "tests/"
         }
     },

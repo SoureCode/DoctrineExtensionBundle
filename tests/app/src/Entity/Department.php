@@ -3,13 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use SoureCode\Bundle\DoctrineExtension\Contracts\TimestampableInterface;
-use SoureCode\Bundle\DoctrineExtension\Traits\TimestampableTrait;
+use SoureCode\Bundle\DoctrineExtension\Traits\TimestampAwareTrait;
 
 #[ORM\Entity]
-class Department implements TimestampableInterface
+class Department
 {
-    use TimestampableTrait;
+    use TimestampAwareTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

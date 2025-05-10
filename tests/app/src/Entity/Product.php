@@ -5,20 +5,18 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use SoureCode\Bundle\DoctrineExtension\Attributes\Translatable;
-use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
-use SoureCode\Bundle\DoctrineExtension\Traits\TranslatableTrait;
+use SoureCode\Bundle\DoctrineExtension\Traits\TimestampAwareTrait;
+use SoureCode\Bundle\DoctrineExtension\Traits\TranslationAwareTrait;
 
-/**
- * @implements TranslatableInterface<ProductTranslation>
- */
-#[Translatable(ProductTranslation::class)]
 #[ORM\Entity]
-class Product implements TranslatableInterface
+#[Translatable(ProductTranslation::class)]
+class Product
 {
+    use TimestampAwareTrait;
     /**
-     * @use TranslatableTrait<ProductTranslation>
+     * @use TranslationAwareTrait<ProductTranslation>
      */
-    use TranslatableTrait;
+    use TranslationAwareTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

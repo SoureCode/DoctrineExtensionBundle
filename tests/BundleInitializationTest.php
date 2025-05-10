@@ -12,7 +12,6 @@ class BundleInitializationTest extends AbstractKernelTestCase
         $container = self::getContainer();
 
         // Act and Assert
-        $this->assertTrue($container->has('soure_code.doctrine_extension.listener.blameable'));
-        $this->assertTrue($container->has('soure_code.doctrine_extension.listener.timestampable'));
+        $this->assertTrue($container->has('soure_code.doctrine_extension.listener.property'));
     }
 }

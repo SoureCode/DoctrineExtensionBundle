@@ -6,7 +6,7 @@ use App\Entity\Post;
 use Doctrine\ORM\EntityManagerInterface;
 use SoureCode\Bundle\DoctrineExtension\Tests\AbstractKernelTestCase;
 
-class TimestampableListenerTest extends AbstractKernelTestCase
+class DateTimePropertyListenerTest extends AbstractKernelTestCase
 {
     protected function setUp(): void
     {

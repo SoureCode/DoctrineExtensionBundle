@@ -2,13 +2,9 @@
 
 namespace SoureCode\Bundle\DoctrineExtension\Contracts;
 
-interface TranslationInterface
+interface TranslationInterface extends LocaleAwareInterface
 {
-    public function getLocale(): string;
+    public function setTranslatable(object $translatable): self;
 
-    public function setLocale(string $locale): self;
-
-    public function getTranslatable(): TranslatableInterface;
-
-    public function setTranslatable(TranslatableInterface $translatable): self;
+    public function getTranslatable(): object;
 }

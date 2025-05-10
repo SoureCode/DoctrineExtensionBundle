@@ -4,37 +4,46 @@ namespace SoureCode\Bundle\DoctrineExtension\EventListener;
 
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use SoureCode\Bundle\DoctrineExtension\Contracts\TranslatableInterface;
+use Doctrine\ORM\Mapping\ClassMetadata as DoctrinaClassMetadata;
 use SoureCode\Bundle\DoctrineExtension\Contracts\TranslationInterface;
-use SoureCode\Bundle\DoctrineExtension\Translation\TranslationMapping;
+use SoureCode\Bundle\DoctrineExtension\Mapping\ClassMetadata;
+use SoureCode\Bundle\DoctrineExtension\Mapping\ClassMetadataFactory;
 
 final class TranslatableListener
 {
     public function __construct(
-        private readonly TranslationMapping $translationMapping,
+        private readonly ClassMetadataFactory $classMetadataFactory,
     ) {
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
     {
         /**
-         * @var ClassMetadata<TranslatableInterface> $classMetadata
+         * @var DoctrinaClassMetadata<object> $doctrineClassMetadata
          */
-        $classMetadata = $event->getClassMetadata();
+        $doctrineClassMetadata = $event->getClassMetadata();
+        $classMetadata = $this->classMetadataFactory->create($doctrineClassMetadata->getName());
 
-        if (\in_array($classMetadata->getName(), $this->translationMapping->getTranslatableClassNames(), true)) {
-            $this->mapTranslatable($classMetadata, $this->translationMapping->getMapping()[$classMetadata->getName()]);
+        if (
+            null !== $classMetadata->translationClassName
+            && !$doctrineClassMetadata->getReflectionClass()->implementsInterface(TranslationInterface::class)
+        ) {
+            $this->mapTranslatable($doctrineClassMetadata, $classMetadata);
         }
     }
 
     /**
-     * @param ClassMetadata<TranslatableInterface> $classMetadata
-     * @param class-string<TranslationInterface>   $translationClassName
+     * @phpstan-param DoctrinaClassMetadata<object> $doctrineClassMetadata
      */
-    private function mapTranslatable(ClassMetadata $classMetadata, string $translationClassName): void
+    private function mapTranslatable(DoctrinaClassMetadata $doctrineClassMetadata, ClassMetadata $classMetadata): void
     {
-        $classMetadataBuilder = new ClassMetadataBuilder($classMetadata);
+        $translationClassName = $classMetadata->translationClassName;
+
+        if (null === $translationClassName) {
+            return;
+        }
+
+        $classMetadataBuilder = new ClassMetadataBuilder($doctrineClassMetadata);
 
         $classMetadataBuilder->createOneToMany('translations', $translationClassName)
             ->mappedBy('translatable')

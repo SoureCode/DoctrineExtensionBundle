@@ -7,8 +7,8 @@
 [![codecov](https://codecov.io/gh/SoureCode/DoctrineExtensionBundle/branch/master/graph/badge.svg?token=GBFBVXQYK4)](https://codecov.io/gh/SoureCode/DoctrineExtensionBundle)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2FSoureCode%2FDoctrineExtensionBundle%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/SoureCode/DoctrineExtensionBundle/master)
 
-[Documentation](./docs/index.md)
-[License](./LICENSE)
+- [Documentation](./docs/index.md)
+- [License](./LICENSE)
 
 ## Installation
 
