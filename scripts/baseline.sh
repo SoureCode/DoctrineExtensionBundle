@@ -7,20 +7,9 @@ PROJECT_DIRECTORY="$(dirname "$CURRENT_DIRECTORY")"
 
 pushd "$PROJECT_DIRECTORY" >/dev/null
 
-# <editor-fold desc="Install tools">
-if [ ! -d "tools" ]; then
-    mkdir -p tools
-fi
+symfony composer update --no-interaction --no-progress --ansi
+symfony composer validate --no-ansi --strict composer.json
 
-if [ ! -f "tools/phpstan.phar" ]; then
-    wget https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar -O tools/phpstan.phar
-    chmod +x tools/phpstan.phar
-fi
-# </editor-fold>
-
-composer update --no-interaction --no-progress --ansi
-composer validate --no-ansi --strict composer.json
-
-php tools/phpstan.phar analyse --memory-limit=512M --ansi --no-progress --error-format=table --generate-baseline=phpstan-baseline.neon
+kyx phpstan analyse --memory-limit=512M --ansi --no-progress --error-format=table --generate-baseline=phpstan-baseline.neon
 
 popd >/dev/null

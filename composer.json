@@ -13,7 +13,6 @@
         "php": ">=8.4",
         "doctrine/collections": "^2.3.0",
         "doctrine/dbal": "^4.2.3",
-        "doctrine/doctrine-bundle": "^2.14",
         "doctrine/orm": "^3.3",
         "sourecode/timezone-bundle": "^0.1.1",
         "symfony/cache": "^7.1",
@@ -23,12 +22,11 @@
         "symfony/http-foundation": "^7.1",
         "symfony/http-kernel": "^7.1",
         "symfony/intl": "^7.1",
-        "symfony/security-bundle": "^7.1",
         "symfony/security-core": "^7.1",
-        "symfony/service-contracts": "^3.5",
-        "symfony/translation": "^7.1"
+        "symfony/service-contracts": "^3.5"
     },
     "require-dev": {
+        "doctrine/doctrine-bundle": "^2.14",
         "nyholm/symfony-bundle-test": "^3.0",
         "phpbench/phpbench": "^1.4",
         "phpstan/extension-installer": "^1.4",
@@ -38,6 +36,7 @@
         "symfony/browser-kit": "^7.1",
         "symfony/phpunit-bridge": "^7.1",
         "symfony/runtime": "^7.1",
+        "symfony/security-bundle": "^7.1",
         "twig/twig": "^3.2"
     },
     "autoload": {
