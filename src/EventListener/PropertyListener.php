@@ -132,7 +132,7 @@ final class PropertyListener implements ResetInterface
 
         if (UserInterface::class === $propertyMetadata->provider) {
             // Reference itself
-            if ($event->getClassMetadata()->getName() === $propertyMetadata->propertyType) {
+            if (is_a($propertyMetadata->propertyType, $event->getClassMetadata()->getName(), true)) {
                 $targetClassMetadata = $doctrineClassMetadata;
             } else {
                 /**
