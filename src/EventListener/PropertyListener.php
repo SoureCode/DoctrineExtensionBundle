@@ -131,10 +131,15 @@ final class PropertyListener implements ResetInterface
         $doctrineClassMetadata = $event->getClassMetadata();
 
         if (UserInterface::class === $propertyMetadata->provider) {
-            /**
-             * @phpstan-ignore-next-line
-             */
-            $targetClassMetadata = $entityManager->getClassMetadata($propertyMetadata->propertyType);
+            // Reference itself
+            if ($event->getClassMetadata()->getName() === $propertyMetadata->propertyType) {
+                $targetClassMetadata = $doctrineClassMetadata;
+            } else {
+                /**
+                 * @phpstan-ignore-next-line
+                 */
+                $targetClassMetadata = $entityManager->getClassMetadata($propertyMetadata->propertyType);
+            }
 
             $classMetadataBuilder = new ClassMetadataBuilder($doctrineClassMetadata);
             $associationBuilder = $classMetadataBuilder->createManyToOne($propertyMetadata->name, $propertyMetadata->propertyType)
